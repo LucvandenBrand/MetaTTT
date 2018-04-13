@@ -1,0 +1,12 @@
+{
+    "//":"This Manifest file describes the build environment.",
+    "name":"MetaTTT",
+    "devDependencies":{
+        "nw":"^0.29.4",
+        "nw-builder":"^3.5.1"
+     },
+    "scripts":{
+        "dev":"nw src/",
+        "prod":"nwbuild --platforms win32,win64,osx64,linux32,linux64 --buildDir dist/ src/"
+    }
+}
