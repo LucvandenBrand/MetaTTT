@@ -1,12 +1,21 @@
 {
-    "//":"This Manifest file describes the build environment.",
-    "name":"MetaTTT",
-    "devDependencies":{
-        "nw":"^0.29.4",
-        "nw-builder":"^3.5.1"
-     },
-    "scripts":{
-        "dev":"nw src/",
-        "prod":"nwbuild --platforms win32,win64,osx64,linux32,linux64 --buildDir dist/ src/"
-    }
+  "//": "This Manifest file describes the build environment.",
+  "name": "MetaTTT",
+  "repository": {
+    "type": "git",
+    "type": "https://github.com/Lukeslux/MetaTTT"
+  },
+  "license": "MIT",
+  "author": "Luc van den Brand",
+  "scripts": {
+    "test": "xo && ava **/*.test.js",
+    "dev": "nw src/",
+    "prod": "nwbuild --platforms win32,win64,osx64,linux32,linux64 --buildDir dist/ src/"
+  },
+  "devDependencies": {
+    "ava": "1.0.0-beta.4",
+    "xo": "^0.18.0",
+    "nw": "^0.29.4",
+    "nw-builder": "^3.5.1"
+  }
 }
