@@ -1,5 +1,6 @@
 # Development files
 dist
+doc
 
 # Editor files.
 .idea
