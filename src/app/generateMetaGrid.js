@@ -4,13 +4,12 @@ import '../styles/table.css';
 
 const GRID_SIZE = 3,
       NODE_DIV = '<div>',
-      CLASS_TABLE = 'table',
-      CLASS_ROW = 'row',
-      CLASS_CELL = 'cell';
+      CLASS_ROW = 'row';
 
-function onCellClick(e) {
-    console.log("Clicked!");
-}
+export const CLASS_TABLE = 'table',
+             CLASS_CELL = 'cell',
+             CLASS_DISABLED = 'disabled',
+             ATTR_LOCATION = 'location';
 
 /**
  * Recursively generates a grid in the container.
@@ -20,14 +19,14 @@ function onCellClick(e) {
 function generateGrid(container, depth) {
     if (depth < 1) {
         $(container).addClass(CLASS_CELL);
-        $(container).click(onCellClick);
     } else {
         $(container).addClass(CLASS_TABLE);
-        for (let x = 0; x < GRID_SIZE; x++) {
+        for (let y = 0; y < GRID_SIZE; y++) {
             let row = $(NODE_DIV);
             $(row).addClass(CLASS_ROW);
-            for (let y = 0; y < GRID_SIZE; y++) {
+            for (let x = 0; x < GRID_SIZE; x++) {
                 let cell = $(NODE_DIV);
+                $(cell).attr(ATTR_LOCATION, y * GRID_SIZE + x);
                 generateGrid(cell, depth - 1);
                 row.append(cell);
             }
