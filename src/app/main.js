@@ -1,5 +1,6 @@
 import generateMetaGrid from './generateMetaGrid';
 import {CLASS_TABLE,
+        CLASS_ROW,
         CLASS_CELL,
         CLASS_DISABLED,
         ATTR_LOCATION} from './generateMetaGrid';
@@ -24,7 +25,7 @@ function getClickStack(cell) {
 function disableWithStack(currentTable, locations) {
     while (locations.length > 1) {
         let location = locations.shift();
-        currentTable.children().closest('.row').children().each(function () {
+        currentTable.children().closest('.' + CLASS_ROW).children().each(function () {
             if ($(this).attr(ATTR_LOCATION) === location)
                 currentTable = $(this);
             else
