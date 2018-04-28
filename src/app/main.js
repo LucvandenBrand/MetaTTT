@@ -5,18 +5,41 @@ import {CLASS_TABLE,
         ATTR_LOCATION} from './generateMetaGrid';
 import $ from 'jquery';
 
-const META_LEVEL = 3,
+const META_LEVEL = 2,
       NODE_CONTAINER = 'body';
 
-$(NODE_CONTAINER).append(generateMetaGrid(META_LEVEL));
+let mainTable = generateMetaGrid(META_LEVEL);
+$(NODE_CONTAINER).append(mainTable);
 
-$('.' + CLASS_CELL).click(function (e) {
-    $('.' + CLASS_DISABLED).removeClass(CLASS_DISABLED);
-
-    let location = $(this).attr(ATTR_LOCATION);
-    let table = $(this).parents('.' + CLASS_TABLE)[1];
-    $(table).find('.' + CLASS_TABLE).each(function () {
-        if ($(this).attr(ATTR_LOCATION) !== location)
-            $(this).addClass(CLASS_DISABLED);
+function getClickStack(cell) {
+    let locations = [$(cell).attr(ATTR_LOCATION)];
+    $(cell).parents('.' + CLASS_TABLE).each(function () {
+        let location = $(this).attr(ATTR_LOCATION);
+        if (location != null)
+            locations.push($(this).attr(ATTR_LOCATION));
     });
+    return locations;
+}
+
+function disableWithStack(currentTable, locations) {
+    while (locations.length > 1) {
+        let location = locations.shift();
+        currentTable.children().closest('.row').children().each(function () {
+            if ($(this).attr(ATTR_LOCATION) === location)
+                currentTable = $(this);
+            else
+                $(this).addClass(CLASS_DISABLED);
+        });
+    }
+}
+
+function isDisabled(cell) {
+    $(cell).parents('.' + CLASS_TABLE).hasClass(CLASS_DISABLED)
+}
+
+$('.' + CLASS_CELL).click(function () {
+    if (!isDisabled(this)) {
+        $('.' + CLASS_DISABLED).removeClass(CLASS_DISABLED);
+        disableWithStack(mainTable, getClickStack(this));
+    }
 });

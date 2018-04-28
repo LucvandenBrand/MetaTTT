@@ -3,10 +3,10 @@ import $ from 'jquery';
 import '../styles/table.css';
 
 const GRID_SIZE = 3,
-      NODE_DIV = '<div>',
-      CLASS_ROW = 'row';
+      NODE_DIV = '<div>';
 
 export const CLASS_TABLE = 'table',
+             CLASS_ROW = 'row',
              CLASS_CELL = 'cell',
              CLASS_DISABLED = 'disabled',
              ATTR_LOCATION = 'location';
