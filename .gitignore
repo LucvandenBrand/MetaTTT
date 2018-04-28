@@ -1,6 +1,11 @@
-# Development files
-dist
+# Documentation can simply be generated, no need to push.
 doc
+
+# Don't keep (intermediary) builds, DO keep the package info for dist.
+dist
+pack/*
+!pack/package.json
+!pack/story.zip
 
 # Editor files.
 .idea

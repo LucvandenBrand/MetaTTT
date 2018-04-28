@@ -1,0 +1,19 @@
+.table {
+    display: inline-block;
+    padding: 0.2em;
+}
+
+.row {
+    display: flex;
+}
+
+.cell {
+    flex: 1;
+    border: 1px solid black;
+    width: 1em;
+    height: 1em;
+}
+
+.disabled {
+    background-color: gray;
+}
