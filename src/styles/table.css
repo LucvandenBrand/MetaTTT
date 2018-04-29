@@ -14,6 +14,14 @@
     height: 1em;
 }
 
+.cell[player-mark='0'] {
+    background-color: green;
+}
+
+.cell[player-mark='1'] {
+    background-color: red;
+}
+
 .disabled {
     background-color: gray;
 }
