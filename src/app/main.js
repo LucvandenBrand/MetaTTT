@@ -2,10 +2,23 @@ import MetaGrid from './metaGrid';
 import $ from 'jquery';
 import Control from "./control";
 
-const META_LEVEL = 2,
-      NODE_CONTAINER = 'body';
+import '../styles/main.css';
 
-let metaGrid = new MetaGrid(META_LEVEL);
-new Control(metaGrid);
+const NODE_CONTAINER = '#grid-container',
+      NODE_SLIDER = '#meta-level',
+      NODE_LEVEL = '#level-value',
+      NODE_NEW_GAME = '#new-game';
 
-$(NODE_CONTAINER).append(metaGrid.getContainer());
+let metaSlider = $(NODE_SLIDER);
+let metaLevelNode = $(NODE_LEVEL);
+metaLevelNode.text(metaSlider.val() - 1);
+metaSlider.on('input', function() {
+    metaLevelNode.text(metaSlider.val() - 1);
+});
+
+$(NODE_NEW_GAME).click(function () {
+    let metaGrid = new MetaGrid(metaSlider.val());
+    new Control(metaGrid);1
+    $(NODE_CONTAINER).empty();
+    $(NODE_CONTAINER).append(metaGrid.getContainer());
+});

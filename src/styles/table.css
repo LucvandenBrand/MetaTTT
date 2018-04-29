@@ -8,20 +8,51 @@
 }
 
 .cell {
+    font-family: monospace;
+    text-align: center;
     flex: 1;
     border: 1px solid black;
+    font-size: 22pt;
     width: 1em;
     height: 1em;
 }
 
-.cell[player-mark='0'] {
-    background-color: green;
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
 }
 
-.cell[player-mark='1'] {
-    background-color: red;
+.cell[player-mark='0']:before {
+    content: 'X';
+    color: green;
+    text-shadow:
+            -1px -1px 0 #000,
+             1px -1px 0 #000,
+            -1px 1px 0 #000,
+             1px 1px 0 #000;
+    background-color: lightgreen;
+    border-radius: 25%;
+    animation: fadeIn 0.5s linear;
+}
+
+.cell[player-mark='1']:before {
+    content: 'O';
+    color: red;
+    text-shadow:
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+            1px 1px 0 #000;
+    background-color: lightcoral;
+    border-radius: 25%;
+    animation: fadeIn 0.5s linear;
 }
 
 .disabled {
+    animation: fadeIn 0.2s linear;
     background-color: gray;
 }

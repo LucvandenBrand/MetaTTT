@@ -1,0 +1,21 @@
+body {
+    text-align: center;
+}
+
+blockquote {
+    font-style: italic;
+}
+
+#level-value {
+    font-weight: bold;
+}
+
+#grid-container:empty {
+    padding: 2em;
+}
+
+#grid-container:empty:after {
+    padding: 1em;
+    border: black 1px solid;
+    content: 'Please select a meta level and press the button.';
+}
