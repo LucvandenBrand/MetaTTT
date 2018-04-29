@@ -7,6 +7,11 @@ Every field in the game can have another tic-tac-toe game embedded within.
 
 The game is written in **ES6**, **HTML5** and **CSS3**.
 
+## Playing
+You can play the game online [here](https://lukeslux.github.io/MetaTTT/index.html)!
+
+Desktop releases are published [here](https://github.com/Lukeslux/MetaTTT/releases).
+
 ## Building
 Building the project is done through [NW.js](https://github.com/nwjs/nw.js) and [nw-builder](https://github.com/nwjs-community/nw-builder).
 
