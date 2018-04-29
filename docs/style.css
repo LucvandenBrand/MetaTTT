@@ -1,0 +1,86 @@
+.table {
+    display: inline-block;
+    padding: 0.2em;
+}
+
+.row {
+    display: flex;
+}
+
+.cell {
+    font-family: monospace;
+    text-align: center;
+    flex: 1;
+    border: 1px solid black;
+    font-size: 22pt;
+    width: 1em;
+    height: 1em;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.cell[player-mark='0']:before {
+    content: 'X';
+    color: green;
+    text-shadow:
+            -1px -1px 0 #000,
+             1px -1px 0 #000,
+            -1px 1px 0 #000,
+             1px 1px 0 #000;
+    background-color: lightgreen;
+    border-radius: 25%;
+    animation: fadeIn 0.5s linear;
+}
+
+.cell[player-mark='1']:before {
+    content: 'O';
+    color: red;
+    text-shadow:
+            -1px -1px 0 #000,
+            1px -1px 0 #000,
+            -1px 1px 0 #000,
+            1px 1px 0 #000;
+    background-color: lightcoral;
+    border-radius: 25%;
+    animation: fadeIn 0.5s linear;
+}
+
+.disabled {
+    animation: fadeIn 0.2s linear;
+    background-color: gray;
+}body {
+    text-align: center;
+}
+
+blockquote {
+    font-style: italic;
+}
+
+footer {
+    position:absolute;
+    bottom:0;
+    right:0;
+    padding: 1em;
+    font-weight: bold;
+}
+
+#level-value {
+    font-weight: bold;
+}
+
+#grid-container:empty {
+    padding: 2em;
+}
+
+#grid-container:empty:after {
+    padding: 1em;
+    border: black 1px solid;
+    content: 'Please select a meta level and press the button.';
+}
