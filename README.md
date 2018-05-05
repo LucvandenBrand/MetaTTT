@@ -1,6 +1,5 @@
 # Meta Tic-Tac-Toe
 [![Build Status](https://travis-ci.org/Lukeslux/MetaTTT.svg?branch=master)](https://travis-ci.org/Lukeslux/MetaTTT)
-![license](https://img.shields.io/github/license/mashape/apistatus.svg)
 
 A recursive solution to the simplicity of tic-tac-toe.
 Every field in the game can have another tic-tac-toe game embedded within.
