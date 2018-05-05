@@ -17,8 +17,7 @@
   "ava": {
     "require": [
       "@babel/register",
-      "babel-polyfill",
-      "./src/app/util/setup-browser-env.js"
+      "babel-polyfill"
     ]
   },
   "esdoc": {
