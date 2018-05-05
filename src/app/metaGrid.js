@@ -45,7 +45,14 @@ function getClickStack(cell) {
     return locations;
 }
 
+function enableTable(table) {
+    table.find('.' + CLASS_DISABLED).removeClass(CLASS_DISABLED);
+}
+
 function disableWithStack(currentTable, locations) {
+    let root = currentTable;
+    enableTable(root);
+
     while (locations.length > 1) {
         let location = locations.shift();
         currentTable.children().closest('.' + CLASS_ROW).children().each(function () {
@@ -55,7 +62,18 @@ function disableWithStack(currentTable, locations) {
                 $(this).addClass(CLASS_DISABLED);
         });
     }
+
+    if (isTableFull(currentTable)) {
+        let freeCell = $(root).find('.' + CLASS_CELL).not('.' + CLASS_CLICKED)[0];
+        disableWithStack(root, getClickStack(freeCell));
+    }
 }
+
+function isTableFull(table) {
+    let numPlayed = $(table).children().children('.' + CLASS_CLICKED).length;
+    return numPlayed === GRID_SIZE * GRID_SIZE;
+}
+
 
 function isCellDisabled(cell) {
     let containingTable = $(cell).parents('.' + CLASS_TABLE);
@@ -78,7 +96,6 @@ export default class MetaGrid {
           _rootTable.find('.' + CLASS_CELL).click(function () {
               if (!isCellDisabled(this)) {
                   onClick(this);
-                  _rootTable.find('.' + CLASS_DISABLED).removeClass(CLASS_DISABLED);
                   disableWithStack(_rootTable, getClickStack(this));
                   $(this).addClass(CLASS_CLICKED);
               }
