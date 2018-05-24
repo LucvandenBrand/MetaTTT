@@ -2,7 +2,7 @@ import $ from 'jquery';
 
 const ATTR_PLAYER_MARK = 'player-mark';
 
-export default class Control {
+export class Control {
     constructor(metaGrid) {
         let _currentPlayer = 0;
 

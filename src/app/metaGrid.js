@@ -64,7 +64,7 @@ function disableWithStack(currentTable, locations) {
     }
 
     if (isTableFull(currentTable)) {
-        let freeCell = $(root).find('.' + CLASS_CELL).not('.' + CLASS_CLICKED)[0];
+        let freeCell = root.find('.' + CLASS_CELL).not('.' + CLASS_CLICKED)[0];
         disableWithStack(root, getClickStack(freeCell));
     }
 }
@@ -83,7 +83,7 @@ function isCellDisabled(cell) {
 /**
  * Generates a grid with multiple grids inside itself.
  */
-export default class MetaGrid {
+export class MetaGrid {
   constructor(metaLevel) {
       let _rootTable = $(NODE_DIV);
       generateTable(_rootTable, metaLevel);
