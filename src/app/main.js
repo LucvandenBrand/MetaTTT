@@ -1,6 +1,6 @@
-import MetaGrid from './metaGrid';
+import { MetaGrid } from './metaGrid';
 import $ from 'jquery';
-import Control from "./control";
+import { Control } from "./control";
 
 import '../styles/main.css';
 
@@ -18,7 +18,7 @@ metaSlider.on('input', function() {
 
 $(NODE_NEW_GAME).click(function () {
     let metaGrid = new MetaGrid(metaSlider.val());
-    new Control(metaGrid);1
+    new Control(metaGrid);
     $(NODE_CONTAINER).empty();
     $(NODE_CONTAINER).append(metaGrid.getContainer());
 });
