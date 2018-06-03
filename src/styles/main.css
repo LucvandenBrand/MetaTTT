@@ -2,28 +2,33 @@ body {
     text-align: center;
 }
 
-blockquote {
-    font-style: italic;
+header {
+    position:fixed;
+    top:0;
+    left: 0;
+    right:0;
+    height: 10vh;
+
+    font-size: 5vh;
+    line-height: 10vh;
 }
 
 footer {
-    position:absolute;
+    position:fixed;
     bottom:0;
     right:0;
-    padding: 1em;
+
+    font-size: 2vh;
+    padding: 1vh;
     font-weight: bold;
+    background-color: white;
+    border-radius: 1vh;
 }
 
-#level-value {
-    font-weight: bold;
-}
-
-#grid-container:empty {
-    padding: 2em;
-}
-
-#grid-container:empty:after {
-    padding: 1em;
-    border: black 1px solid;
-    content: 'Please select a meta level and press the button.';
+#grid-control {
+    position:fixed;
+    bottom:0;
+    left: 0;
+    right: 0;
+    padding: 2vh;
 }

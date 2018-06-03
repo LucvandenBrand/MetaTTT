@@ -1,18 +1,14 @@
-import $ from 'jquery';
-
-const ATTR_PLAYER_MARK = 'player-mark';
-
 export class Control {
-    constructor(metaGrid) {
-        let _currentPlayer = 0;
+    constructor() {
+        let _previousPlayer = 0;
 
-        function nextPlayer() {
-            _currentPlayer = 1 - _currentPlayer;
-        }
+        const currentPlayer = () => {
+            return _previousPlayer ^= 1;
+        };
 
-        metaGrid.onCellClick(function (cell) {
-            $(cell).attr(ATTR_PLAYER_MARK, _currentPlayer);
-            nextPlayer();
-        });
+        this.handleClick = gridLeaf => {
+            if (gridLeaf.getMark() == null)
+                gridLeaf.setMark(currentPlayer());
+        };
     }
 }
