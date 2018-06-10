@@ -6,6 +6,19 @@ export class Control {
             return _previousPlayer ^= 1;
         };
 
+        const applyToLeafs = (grid, method) => {
+            if (grid.isLeaf()) {
+                method(grid);
+                return;
+            }
+
+            for (let row = 0; row < grid.getSize(); row++) {
+                for (let col = 0; col < grid.getSize(); col++) {
+                    applyToLeafs(grid.getChild(row, col), method);
+                }
+            }
+        };
+
         const checkRows = grid => {
             for (let row = 0; row < grid.getSize(); row++) {
                 const firstCell = grid.getChild(row, 0).getMark();
@@ -63,7 +76,7 @@ export class Control {
                 firstRightCell != null && rightDiagonal;
         };
 
-        const  checkWin = (grid, checkMark) => {
+        const checkWin = (grid, checkMark) => {
             if (grid.isMarked())
                 return;
 
@@ -75,26 +88,37 @@ export class Control {
             }
         };
 
+        const enableReverse = (grid, metaIndex) => {
+            if (metaIndex.length === 1) {
+                applyToLeafs(grid, (leaf) => {
+                    leaf.enable(true);
+                });
+                return;
+            }
+
+            const childIndex = metaIndex.pop();
+            const child = grid.getChild(childIndex.row, childIndex.col);
+
+            enableReverse(child, metaIndex);
+        };
+
         const handleClick = gridLeaf => {
             const player = currentPlayer();
             if (gridLeaf.isEnabled() && !gridLeaf.isMarked()) {
                 gridLeaf.setMark(player);
                 checkWin(gridLeaf.getParent(), player);
+
+                applyToLeafs(rootGrid, (leaf) => {
+                    leaf.enable(false);
+                });
+
+                enableReverse(rootGrid, gridLeaf.getMetaIndex());
             }
         };
 
-        const bindClickToGrid = grid => {
-            if (grid.isLeaf())
-                grid.getElement().onclick = () => {handleClick(grid)};
-            else {
-                for (let row = 0; row < grid.getSize(); row++) {
-                    for (let col = 0; col < grid.getSize(); col++) {
-                        bindClickToGrid(grid.getChild(row, col));
-                    }
-                }
-            }
-        };
-
-        bindClickToGrid(rootGrid);
+        applyToLeafs(rootGrid, (leaf) => {
+            leaf.getElement().onclick = () => {handleClick(leaf)};
+            leaf.enable(true);
+        });
     }
 }

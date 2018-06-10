@@ -9,11 +9,12 @@ export class MetaGrid {
         const _cells = [];
         const _element = document.createElement(ELEM_GRID);
         let _mark;
-        let _enabled = true;
+        let _enabled = false;
 
         const updateElement = () => {
-            _element.setAttribute(ATTR_MARK, _mark);
-            if (_enabled)
+            if (this.isMarked())
+                _element.setAttribute(ATTR_MARK, _mark);
+            if (this.isEnabled())
                 _element.classList.add(CLASS_ENABLED);
             else
                 _element.classList.remove(CLASS_ENABLED);
@@ -46,16 +47,16 @@ export class MetaGrid {
             return {row: childRow, col: childCol};
         };
 
-        this.getGridIndex = childGrid => {
+        this.getMetaIndex = childGrid => {
             if (this.isLeaf())
-                return parent.getGridIndex(this);
+                return parent.getMetaIndex(this);
 
             const childIndex = getChildIndex(childGrid);
 
             if (this.isRoot())
                 return [childIndex];
 
-            return parent.getGridIndex(this).concat(childIndex);
+            return parent.getMetaIndex(this).concat(childIndex);
         };
 
         this.getChild = (row, col) => {
@@ -99,5 +100,7 @@ export class MetaGrid {
 
         if (!this.isLeaf())
             makeChildren();
+
+        updateElement();
     }
 }

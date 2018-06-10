@@ -30,7 +30,7 @@
 
     border-radius: 1vh;
     border: 1px solid rgba(0, 0, 0, 0.5);
-    background-color: rgba(255, 255, 255, 0.8);;
+    background-color: rgba(255, 255, 255, 0.8);
 }
 
 #grid-container div div {
@@ -38,9 +38,21 @@
 }
 
 #grid-container div[mark='0'] {
-    background-color: green;
+    background: green;
+}
+
+#grid-container div[mark='0']:not(.enabled) {
+    background-color: rgba(0, 100, 0, 1);
 }
 
 #grid-container div[mark='1'] {
-    background-color: red;
+    background: red;
+}
+
+#grid-container div[mark='1']:not(.enabled) {
+    background-color: rgba(100, 0, 0, 1);
+}
+
+#grid-container div:not(.enabled) {
+    background-color: rgba(100, 100, 100, 1);
 }
