@@ -22,7 +22,7 @@ metaSlider.oninput = setMetaDisplay;
 document.getElementById(ID_NEW_GAME_BUTTON).onclick = () => {
     const gridContainer = document.getElementById(ID_CONTAINER);
     gridContainer.innerHTML = '';
-    const control = new Control();
-    const metaGrid = new MetaGrid(GRID_SIZE, metaSlider.value, control.handleClick);
+    const metaGrid = new MetaGrid(GRID_SIZE, metaSlider.value);
     gridContainer.appendChild(metaGrid.getElement());
+    new Control(metaGrid);
 };

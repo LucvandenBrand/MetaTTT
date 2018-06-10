@@ -1,7 +1,7 @@
 import '../styles/grid.css';
 
 export class MetaGrid {
-    constructor(size, depth, onLeafClick, parent) {
+    constructor(size, depth, parent) {
         const ATTR_MARK = 'mark',
               ELEM_GRID = 'div',
               CLASS_ENABLED = 'enabled';
@@ -25,7 +25,7 @@ export class MetaGrid {
             for (let row = 0; row < size; row++) {
                 _cells[row] = [];
                 for (let col = 0; col < size; col++) {
-                    const cell = new MetaGrid(size, depth - 1, onLeafClick, this);
+                    const cell = new MetaGrid(size, depth - 1, this);
                     _cells[row].push(cell);
                     _element.appendChild(cell.getElement());
                 }
@@ -97,9 +97,7 @@ export class MetaGrid {
 
         this.isEnabled = () => _enabled;
 
-        if (this.isLeaf())
-            _element.onclick = () => onLeafClick(this);
-        else
+        if (!this.isLeaf())
             makeChildren();
     }
 }

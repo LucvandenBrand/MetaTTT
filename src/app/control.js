@@ -1,5 +1,5 @@
 export class Control {
-    constructor() {
+    constructor(rootGrid) {
         let _previousPlayer = 0;
 
         const currentPlayer = () => {
@@ -75,12 +75,26 @@ export class Control {
             }
         };
 
-        this.handleClick = gridLeaf => {
+        const handleClick = gridLeaf => {
             const player = currentPlayer();
             if (gridLeaf.isEnabled() && !gridLeaf.isMarked()) {
                 gridLeaf.setMark(player);
                 checkWin(gridLeaf.getParent(), player);
             }
         };
+
+        const bindClickToGrid = grid => {
+            if (grid.isLeaf())
+                grid.getElement().onclick = () => {handleClick(grid)};
+            else {
+                for (let row = 0; row < grid.getSize(); row++) {
+                    for (let col = 0; col < grid.getSize(); col++) {
+                        bindClickToGrid(grid.getChild(row, col));
+                    }
+                }
+            }
+        };
+
+        bindClickToGrid(rootGrid);
     }
 }
