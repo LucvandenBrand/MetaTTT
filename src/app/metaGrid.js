@@ -19,18 +19,6 @@ export class MetaGrid {
                 _element.classList.remove(CLASS_ENABLED);
         };
 
-        const isLeaf = () => {
-            return depth === 0;
-        };
-
-        const isRoot = () => {
-            return parent == null;
-        };
-
-        const isMarked = () => {
-            return _mark != null;
-        };
-
         const makeChildren = () => {
             _cells.length = 0;
             _element.innerHTML = '';
@@ -58,75 +46,39 @@ export class MetaGrid {
             return {row: childRow, col: childCol};
         };
 
-        const checkRows = () => {
-            for (let row = 0; row < size; row++) {
-                const firstCell = _cells[row][0].getMark();
-                if (firstCell == null)
-                    continue;
+        this.getGridIndex = childGrid => {
+            if (this.isLeaf())
+                return parent.getGridIndex(this);
 
-                let col;
-                for (col = 0; col < size; col++) {
-                    if (_cells[row][col].getMark() !== firstCell)
-                        break;
-                }
+            const childIndex = getChildIndex(childGrid);
 
-                if (col === size)
-                    return true;
-            }
+            if (this.isRoot())
+                return [childIndex];
 
-            return false;
+            return parent.getGridIndex(this).concat(childIndex);
         };
 
-        const checkColumns = () => {
-            for (let col = 0; col < size; col++) {
-                const firstCell = _cells[0][col].getMark();
-                if (firstCell == null)
-                    continue;
-
-                let row;
-                for (row = 0; row < size; row++) {
-                    if (_cells[row][col].getMark() !== firstCell)
-                        break;
-                }
-
-                if (row === size)
-                    return true;
-            }
-
-            return false;
+        this.getChild = (row, col) => {
+            if (!this.isLeaf())
+                return _cells[row][col];
         };
 
-        const checkDiagonals = () => {
-            const firstLeftCell = _cells[0][0].getMark();
-            const firstRightCell = _cells[0][size-1].getMark();
+        this.getElement = () => _element;
 
-            let leftDiagonal = true, rightDiagonal = true;
-            for (let index = 0; index < size; index++) {
-                if (_cells[index][index].getMark() !== firstLeftCell) {
-                    leftDiagonal = false;
-                }
+        this.getSize = () => size;
 
-                let mirrorIndex = size - index - 1;
-                if (_cells[index][mirrorIndex].getMark() !== firstRightCell) {
-                    rightDiagonal = false;
-                }
-            }
-            return firstLeftCell  != null && leftDiagonal ||
-                   firstRightCell != null && rightDiagonal;
+        this.getParent = () => parent;
+
+        this.isLeaf = () => {
+            return depth === 0;
         };
 
-        this.checkWin = (checkMark) => {
-            if (isMarked())
-                return;
-
-            if (checkRows() || checkColumns() || checkDiagonals())
-                this.setMark(checkMark);
+        this.isRoot = () => {
+            return parent == null;
         };
 
         this.setMark = mark => {
             _mark = mark;
-            if (!isRoot())
-                parent.checkWin(mark);
             updateElement();
         };
 
@@ -134,36 +86,18 @@ export class MetaGrid {
             return _mark;
         };
 
-        this.getGridIndex = childGrid => {
-            if (isLeaf())
-                return parent.getGridIndex(this);
-
-            const childIndex = getChildIndex(childGrid);
-
-            if (isRoot())
-                return [childIndex];
-
-            return parent.getGridIndex(this).concat(childIndex);
+        this.isMarked = () => {
+            return _mark != null;
         };
 
-        this.getFromGridIndex = absoluteIndex => {
-            if (absoluteIndex.length !== depth)
-                return;
-
-            if (absoluteIndex.length === 0)
-                return this;
-
-            const index = absoluteIndex.pop();
-            return _cells[index.row][index.col].getFromGridIndex(absoluteIndex);
+        this.enable = enabled => {
+            _enabled = enabled;
+            updateElement();
         };
-
-        this.enable = enabled => _enabled = enabled;
 
         this.isEnabled = () => _enabled;
 
-        this.getElement = () => _element;
-
-        if (isLeaf())
+        if (this.isLeaf())
             _element.onclick = () => onLeafClick(this);
         else
             makeChildren();
