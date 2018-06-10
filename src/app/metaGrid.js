@@ -84,7 +84,7 @@ export class MetaGrid {
         };
 
         this.checkWin = (checkMark) => {
-            if (_mark)
+            if (_mark != null)
                 return;
 
             if (checkRows() || checkColumns() || checkDiagonals())
@@ -93,7 +93,7 @@ export class MetaGrid {
 
         this.setMark = mark => {
             _mark = mark;
-            if (parent)
+            if (parent != null)
                 parent.checkWin(mark);
             updateElement();
         };
