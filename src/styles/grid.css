@@ -1,0 +1,58 @@
+#grid-container {
+    display: table;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 75vh;
+    height: 75vh;
+}
+
+#grid-container:empty {
+    border-radius: 1vh;
+    border: 1px solid black;
+}
+
+#grid-container:empty:after {
+    line-height: 75vh;
+    text-align: center;
+    content: 'Please select a meta level and press the button.';
+}
+
+#grid-container div {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    width: 95%;
+    height: 95%;
+    margin: 2.5%;
+
+    border-radius: 1vh;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+#grid-container div div {
+    border: 1px dashed rgba(0, 0, 0, 0.5);
+}
+
+#grid-container div[mark='0'] {
+    background: green;
+}
+
+#grid-container div[mark='0']:not(.enabled) {
+    background-color: rgba(0, 100, 0, 1);
+}
+
+#grid-container div[mark='1'] {
+    background: red;
+}
+
+#grid-container div[mark='1']:not(.enabled) {
+    background-color: rgba(100, 0, 0, 1);
+}
+
+#grid-container div:not(.enabled) {
+    background-color: rgba(100, 100, 100, 1);
+}
