@@ -7,8 +7,9 @@ export class Control {
         };
 
         this.handleClick = gridLeaf => {
-            if (gridLeaf.getMark() == null)
+            if (gridLeaf.isEnabled() && gridLeaf.getMark() == null) {
                 gridLeaf.setMark(currentPlayer());
+            }
         };
     }
 }

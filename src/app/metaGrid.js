@@ -3,14 +3,20 @@ import '../styles/grid.css';
 export class MetaGrid {
     constructor(size, depth, onLeafClick, parent) {
         const ATTR_MARK = 'mark',
-              ELEM_GRID = 'div';
+              ELEM_GRID = 'div',
+              CLASS_ENABLED = 'enabled';
 
         const _cells = [];
         const _element = document.createElement(ELEM_GRID);
         let _mark;
+        let _enabled = true;
 
         const updateElement = () => {
             _element.setAttribute(ATTR_MARK, _mark);
+            if (_enabled)
+                _element.classList.add(CLASS_ENABLED);
+            else
+                _element.classList.remove(CLASS_ENABLED);
         };
 
         const isLeaf = () => {
@@ -49,7 +55,7 @@ export class MetaGrid {
                 }
             }
 
-            return [childRow, childCol];
+            return {row: childRow, col: childCol};
         };
 
         const checkRows = () => {
@@ -128,17 +134,32 @@ export class MetaGrid {
             return _mark;
         };
 
-        this.getAbsoluteIndex = childGrid => {
+        this.getGridIndex = childGrid => {
             if (isLeaf())
-                return parent.getAbsoluteIndex(this);
+                return parent.getGridIndex(this);
 
             const childIndex = getChildIndex(childGrid);
 
             if (isRoot())
-                return childIndex;
+                return [childIndex];
 
-            return parent.getAbsoluteIndex(this).concat(childIndex);
+            return parent.getGridIndex(this).concat(childIndex);
         };
+
+        this.getFromGridIndex = absoluteIndex => {
+            if (absoluteIndex.length !== depth)
+                return;
+
+            if (absoluteIndex.length === 0)
+                return this;
+
+            const index = absoluteIndex.pop();
+            return _cells[index.row][index.col].getFromGridIndex(absoluteIndex);
+        };
+
+        this.enable = enabled => _enabled = enabled;
+
+        this.isEnabled = () => _enabled;
 
         this.getElement = () => _element;
 
