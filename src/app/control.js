@@ -88,17 +88,48 @@ export class Control {
             }
         };
 
+        const countMarked = grid => {
+            let numMarked = 0;
+            for (let row = 0; row < grid.getSize(); row++)
+                for (let col = 0; col < grid.getSize(); col++)
+                    if (grid.getChild(row, col).isMarked())
+                        numMarked++;
+            return numMarked;
+        };
+
+        const isFilled = grid => {
+            const numChildren = grid.getSize() * grid.getSize();
+            return countMarked(grid) === numChildren;
+        };
+
+        const findEmpty = grid => {
+            for (let row = 0; row < grid.getSize(); row++) {
+                for (let col = 0; col < grid.getSize(); col++) {
+                    const child = grid.getChild(row, col);
+                    if (!isFilled(child)) {
+                        return child;
+                    }
+                }
+            }
+        };
+
         const enableReverse = (grid, metaIndex) => {
             if (metaIndex.length === 1) {
+                if (isFilled(grid) && !grid.isRoot())
+                    grid = findEmpty(grid.getParent());
+
+                if (grid == null)
+                    return;
+
                 applyToLeafs(grid, (leaf) => {
                     leaf.enable(true);
                 });
+
                 return;
             }
 
             const childIndex = metaIndex.pop();
-            const child = grid.getChild(childIndex.row, childIndex.col);
-
+            let child = grid.getChild(childIndex.row, childIndex.col);
             enableReverse(child, metaIndex);
         };
 
