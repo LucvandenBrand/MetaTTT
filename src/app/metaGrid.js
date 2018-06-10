@@ -1,6 +1,15 @@
 import '../styles/grid.css';
 
+/**
+ * Defines a grid that can contain other grids.
+ */
 export class MetaGrid {
+    /**
+     * Construct a meta grid.
+     * @param {Number} size The size of the square grid.
+     * @param {Number} depth The number of nested grids inside this grid.
+     * @param {MetaGrid | undefined} parent The parent of this grid, undefined means this is the root.
+     */
     constructor(size, depth, parent) {
         const ATTR_MARK = 'mark',
               ELEM_GRID = 'div',
@@ -47,6 +56,11 @@ export class MetaGrid {
             return {row: childRow, col: childCol};
         };
 
+        /**
+         * Return the index of the grid in its nested state.
+         * @param {MetaGrid} childGrid
+         * @return {Object[]} List of objects containing (row, col) indices.
+         */
         this.getMetaIndex = childGrid => {
             if (this.isLeaf())
                 return parent.getMetaIndex(this);
@@ -59,43 +73,89 @@ export class MetaGrid {
             return parent.getMetaIndex(this).concat(childIndex);
         };
 
+        /**
+         * Return the nested child at (row, col).
+         * @param {Number} row The row that contains the child.
+         * @param {Number} col The column that contains the child.
+         * @return {MetaGrid | undefined} Meta grid if it exists, otherwise undefined.
+         */
         this.getChild = (row, col) => {
             if (!this.isLeaf())
                 return _cells[row][col];
         };
 
+        /**
+         * Return the HTMLElement visualizing the meta grid.
+         * @return {HTMLDivElement}
+         */
         this.getElement = () => _element;
 
+        /**
+         * Return the size of this meta grid.
+         * @return {Number}
+         */
         this.getSize = () => size;
 
+        /**
+         * Return the parent of this meta grid.
+         * @return {MetaGrid}
+         */
         this.getParent = () => parent;
 
+        /**
+         * Return true if this meta grid contains no children.
+         * @return {boolean}
+         */
         this.isLeaf = () => {
             return depth === 0;
         };
 
+        /**
+         * Return true if this meta grid contains no parent.
+         * @return {boolean}
+         */
         this.isRoot = () => {
             return parent == null;
         };
 
+        /**
+         * Assign a mark to this meta grid.
+         * @param {Number} mark Mark to assign.
+         */
         this.setMark = mark => {
             _mark = mark;
             updateElement();
         };
 
+        /**
+         * Return the mark assigned to this meta grid.
+         * @return {Number} The mark of this grid.
+         */
         this.getMark = () => {
             return _mark;
         };
 
+        /**
+         * Return true if this meta grid contains a mark.
+         * @return {boolean} True if this meta grid is marked.
+         */
         this.isMarked = () => {
             return _mark != null;
         };
 
+        /**
+         * Enable or disable this meta grid for interaction.
+         * @param {boolean} enabled True if this meta grid can be interacted with.
+         */
         this.enable = enabled => {
             _enabled = enabled;
             updateElement();
         };
 
+        /**
+         * Return true if this meta grid can be interacted with.
+         * @return {boolean} True if this meta grid can be interacted with.
+         */
         this.isEnabled = () => _enabled;
 
         if (!this.isLeaf())

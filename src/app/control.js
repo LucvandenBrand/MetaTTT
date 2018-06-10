@@ -1,4 +1,11 @@
+/**
+ * Handles game-play logic and player control.
+ */
 export class Control {
+    /**
+     * Construct a control object and attach it to the root grid.
+     * @param {MetaGrid} rootGrid The root of a MetaGrid.
+     */
     constructor(rootGrid) {
         let _previousPlayer = 0;
 
