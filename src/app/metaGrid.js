@@ -13,6 +13,18 @@ export class MetaGrid {
             _element.setAttribute(ATTR_MARK, _mark);
         };
 
+        const isLeaf = () => {
+            return depth === 0;
+        };
+
+        const isRoot = () => {
+            return parent == null;
+        };
+
+        const isMarked = () => {
+            return _mark != null;
+        };
+
         const makeChildren = () => {
             _cells.length = 0;
             _element.innerHTML = '';
@@ -24,6 +36,20 @@ export class MetaGrid {
                     _element.appendChild(cell.getElement());
                 }
             }
+        };
+
+        const getChildIndex = childGrid => {
+            let childRow = -1;
+            let childCol = -1;
+            for (let row = 0; row < size; row++) {
+                childCol = _cells[row].indexOf(childGrid);
+                if (childCol >= 0) {
+                    childRow = row;
+                    break;
+                }
+            }
+
+            return [childRow, childCol];
         };
 
         const checkRows = () => {
@@ -84,7 +110,7 @@ export class MetaGrid {
         };
 
         this.checkWin = (checkMark) => {
-            if (_mark != null)
+            if (isMarked())
                 return;
 
             if (checkRows() || checkColumns() || checkDiagonals())
@@ -93,7 +119,7 @@ export class MetaGrid {
 
         this.setMark = mark => {
             _mark = mark;
-            if (parent != null)
+            if (!isRoot())
                 parent.checkWin(mark);
             updateElement();
         };
@@ -102,11 +128,23 @@ export class MetaGrid {
             return _mark;
         };
 
+        this.getAbsoluteIndex = childGrid => {
+            if (isLeaf())
+                return parent.getAbsoluteIndex(this);
+
+            const childIndex = getChildIndex(childGrid);
+
+            if (isRoot())
+                return childIndex;
+
+            return parent.getAbsoluteIndex(this).concat(childIndex);
+        };
+
         this.getElement = () => _element;
 
-        if (depth > 0)
-            makeChildren();
-        else
+        if (isLeaf())
             _element.onclick = () => onLeafClick(this);
+        else
+            makeChildren();
     }
 }
