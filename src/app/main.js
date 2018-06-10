@@ -1,24 +1,28 @@
 import { MetaGrid } from './metaGrid';
-import $ from 'jquery';
-import { Control } from "./control";
+import { Control } from './control';
 
 import '../styles/main.css';
 
-const NODE_CONTAINER = '#grid-container',
-      NODE_SLIDER = '#meta-level',
-      NODE_LEVEL = '#level-value',
-      NODE_NEW_GAME = '#new-game';
+const ID_CONTAINER = 'grid-container',
+      ID_META_SLIDER = 'meta-level',
+      ID_META_DISPLAY = 'level-value',
+      ID_NEW_GAME_BUTTON = 'new-game',
+      GRID_SIZE = 3;
 
-let metaSlider = $(NODE_SLIDER);
-let metaLevelNode = $(NODE_LEVEL);
-metaLevelNode.text(metaSlider.val() - 1);
-metaSlider.on('input', function() {
-    metaLevelNode.text(metaSlider.val() - 1);
-});
+const metaSlider = document.getElementById(ID_META_SLIDER);
+const metaDisplay = document.getElementById(ID_META_DISPLAY);
 
-$(NODE_NEW_GAME).click(function () {
-    let metaGrid = new MetaGrid(metaSlider.val());
+const setMetaDisplay = () => {
+    metaDisplay.innerText = String(metaSlider.value - 1)
+};
+
+setMetaDisplay();
+metaSlider.oninput = setMetaDisplay;
+
+document.getElementById(ID_NEW_GAME_BUTTON).onclick = () => {
+    const gridContainer = document.getElementById(ID_CONTAINER);
+    gridContainer.innerHTML = '';
+    const metaGrid = new MetaGrid(GRID_SIZE, metaSlider.value);
+    gridContainer.appendChild(metaGrid.getElement());
     new Control(metaGrid);
-    $(NODE_CONTAINER).empty();
-    $(NODE_CONTAINER).append(metaGrid.getContainer());
-});
+};

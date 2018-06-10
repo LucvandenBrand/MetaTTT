@@ -1,105 +1,166 @@
-import $ from 'jquery';
-
-import '../styles/table.css';
-
-const GRID_SIZE = 3,
-      NODE_DIV = '<div>',
-      CLASS_TABLE = 'table',
-      CLASS_ROW = 'row',
-      CLASS_CELL = 'cell',
-      CLASS_DISABLED = 'disabled',
-      CLASS_CLICKED   = 'played',
-      ATTR_LOCATION = 'location';
+import '../styles/grid.css';
 
 /**
- * Recursively generates a grid in the container.
- * @param container The container to add the grid to.
- * @param depth The number of recursions.
- */
-function generateTable(container, depth) {
-    if (depth < 1) {
-        $(container).addClass(CLASS_CELL);
-    } else {
-        $(container).addClass(CLASS_TABLE);
-        for (let y = 0; y < GRID_SIZE; y++) {
-            let row = $(NODE_DIV);
-            $(row).addClass(CLASS_ROW);
-            for (let x = 0; x < GRID_SIZE; x++) {
-                let cell = $(NODE_DIV);
-                $(cell).attr(ATTR_LOCATION, y * GRID_SIZE + x);
-                generateTable(cell, depth - 1);
-                row.append(cell);
-            }
-            $(container).append(row);
-        }
-    }
-}
-
-function getClickStack(cell) {
-    let locations = [$(cell).attr(ATTR_LOCATION)];
-    $(cell).parents('.' + CLASS_TABLE).each(function () {
-        let location = $(this).attr(ATTR_LOCATION);
-        if (location != null)
-            locations.push($(this).attr(ATTR_LOCATION));
-    });
-    return locations;
-}
-
-function enableTable(table) {
-    table.find('.' + CLASS_DISABLED).removeClass(CLASS_DISABLED);
-}
-
-function disableWithStack(currentTable, locations) {
-    let root = currentTable;
-    enableTable(root);
-
-    while (locations.length > 1) {
-        let location = locations.shift();
-        currentTable.children().closest('.' + CLASS_ROW).children().each(function () {
-            if ($(this).attr(ATTR_LOCATION) === location)
-                currentTable = $(this);
-            else
-                $(this).addClass(CLASS_DISABLED);
-        });
-    }
-
-    if (isTableFull(currentTable)) {
-        let freeCell = root.find('.' + CLASS_CELL).not('.' + CLASS_CLICKED)[0];
-        disableWithStack(root, getClickStack(freeCell));
-    }
-}
-
-function isTableFull(table) {
-    let numPlayed = $(table).children().children('.' + CLASS_CLICKED).length;
-    return numPlayed === GRID_SIZE * GRID_SIZE;
-}
-
-
-function isCellDisabled(cell) {
-    let containingTable = $(cell).parents('.' + CLASS_TABLE);
-    return containingTable.hasClass(CLASS_DISABLED) || $(cell).hasClass(CLASS_CLICKED);
-}
-
-/**
- * Generates a grid with multiple grids inside itself.
+ * Defines a grid that can contain other grids.
  */
 export class MetaGrid {
-  constructor(metaLevel) {
-      let _rootTable = $(NODE_DIV);
-      generateTable(_rootTable, metaLevel);
+    /**
+     * Construct a meta grid.
+     * @param {Number} size The size of the square grid.
+     * @param {Number} depth The number of nested grids inside this grid.
+     * @param {MetaGrid | undefined} parent The parent of this grid, undefined means this is the root.
+     */
+    constructor(size, depth, parent) {
+        const ATTR_MARK = 'mark',
+              ELEM_GRID = 'div',
+              CLASS_ENABLED = 'enabled';
 
-      this.getContainer = function() {
-          return _rootTable;
-      };
+        const _cells = [];
+        const _element = document.createElement(ELEM_GRID);
+        let _mark;
+        let _enabled = false;
 
-      this.onCellClick = function(onClick) {
-          _rootTable.find('.' + CLASS_CELL).click(function () {
-              if (!isCellDisabled(this)) {
-                  onClick(this);
-                  disableWithStack(_rootTable, getClickStack(this));
-                  $(this).addClass(CLASS_CLICKED);
-              }
-          });
-      };
-  }
-};
+        const updateElement = () => {
+            if (this.isMarked())
+                _element.setAttribute(ATTR_MARK, _mark);
+            if (this.isEnabled())
+                _element.classList.add(CLASS_ENABLED);
+            else
+                _element.classList.remove(CLASS_ENABLED);
+        };
+
+        const makeChildren = () => {
+            _cells.length = 0;
+            _element.innerHTML = '';
+            for (let row = 0; row < size; row++) {
+                _cells[row] = [];
+                for (let col = 0; col < size; col++) {
+                    const cell = new MetaGrid(size, depth - 1, this);
+                    _cells[row].push(cell);
+                    _element.appendChild(cell.getElement());
+                }
+            }
+        };
+
+        const getChildIndex = childGrid => {
+            let childRow = -1;
+            let childCol = -1;
+            for (let row = 0; row < size; row++) {
+                childCol = _cells[row].indexOf(childGrid);
+                if (childCol >= 0) {
+                    childRow = row;
+                    break;
+                }
+            }
+
+            return {row: childRow, col: childCol};
+        };
+
+        /**
+         * Return the index of the grid in its nested state.
+         * @param {MetaGrid} childGrid
+         * @return {Object[]} List of objects containing (row, col) indices.
+         */
+        this.getMetaIndex = childGrid => {
+            if (this.isLeaf())
+                return parent.getMetaIndex(this);
+
+            const childIndex = getChildIndex(childGrid);
+
+            if (this.isRoot())
+                return [childIndex];
+
+            return parent.getMetaIndex(this).concat(childIndex);
+        };
+
+        /**
+         * Return the nested child at (row, col).
+         * @param {Number} row The row that contains the child.
+         * @param {Number} col The column that contains the child.
+         * @return {MetaGrid | undefined} Meta grid if it exists, otherwise undefined.
+         */
+        this.getChild = (row, col) => {
+            if (!this.isLeaf())
+                return _cells[row][col];
+        };
+
+        /**
+         * Return the HTMLElement visualizing the meta grid.
+         * @return {HTMLDivElement}
+         */
+        this.getElement = () => _element;
+
+        /**
+         * Return the size of this meta grid.
+         * @return {Number}
+         */
+        this.getSize = () => size;
+
+        /**
+         * Return the parent of this meta grid.
+         * @return {MetaGrid}
+         */
+        this.getParent = () => parent;
+
+        /**
+         * Return true if this meta grid contains no children.
+         * @return {boolean}
+         */
+        this.isLeaf = () => {
+            return depth === 0;
+        };
+
+        /**
+         * Return true if this meta grid contains no parent.
+         * @return {boolean}
+         */
+        this.isRoot = () => {
+            return parent == null;
+        };
+
+        /**
+         * Assign a mark to this meta grid.
+         * @param {Number} mark Mark to assign.
+         */
+        this.setMark = mark => {
+            _mark = mark;
+            updateElement();
+        };
+
+        /**
+         * Return the mark assigned to this meta grid.
+         * @return {Number} The mark of this grid.
+         */
+        this.getMark = () => {
+            return _mark;
+        };
+
+        /**
+         * Return true if this meta grid contains a mark.
+         * @return {boolean} True if this meta grid is marked.
+         */
+        this.isMarked = () => {
+            return _mark != null;
+        };
+
+        /**
+         * Enable or disable this meta grid for interaction.
+         * @param {boolean} enabled True if this meta grid can be interacted with.
+         */
+        this.enable = enabled => {
+            _enabled = enabled;
+            updateElement();
+        };
+
+        /**
+         * Return true if this meta grid can be interacted with.
+         * @return {boolean} True if this meta grid can be interacted with.
+         */
+        this.isEnabled = () => _enabled;
+
+        if (!this.isLeaf())
+            makeChildren();
+
+        updateElement();
+    }
+}

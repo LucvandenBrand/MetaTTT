@@ -1,7 +1,7 @@
 {
     "//":"This Manifest file describes the NW.js app.",
     "name":"MetaTTT",
-    "version":"1.0.0",
+    "version":"0.2.0",
     "main":"index.html",
     "window": {
         "min_width": 1280,

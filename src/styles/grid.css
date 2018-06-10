@@ -56,39 +56,3 @@
 #grid-container div:not(.enabled) {
     background-color: rgba(100, 100, 100, 1);
 }
-body {
-    text-align: center;
-}
-
-header {
-    position:fixed;
-    top:0;
-    left: 0;
-    right:0;
-    height: 10vh;
-
-    font-size: 5vh;
-    line-height: 10vh;
-}
-
-footer {
-    position:fixed;
-    bottom:0;
-    right:0;
-
-    font-size: 2vh;
-    padding: 1vh;
-    font-weight: bold;
-    background-color: white;
-    border-radius: 1vh;
-}
-
-#grid-control {
-    position:fixed;
-    bottom:0;
-    left: 0;
-    right: 0;
-    padding: 2vh;
-}
-
-/*# sourceMappingURL=style.css.map*/
